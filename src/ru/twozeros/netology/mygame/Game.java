@@ -3,9 +3,10 @@ package ru.twozeros.netology.mygame;
 import java.io.*;
 import java.util.Arrays;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-public class GameUtils {
+public class Game {
     public static void saveGame(String pathToSave, GameProgress gameProgress) {
         File file = new File(pathToSave);
         try (ObjectOutputStream oot = new ObjectOutputStream(new FileOutputStream(file))) {
@@ -38,5 +39,38 @@ public class GameUtils {
         Arrays.stream(pathToFile)
                 .map(File::new)
                 .forEach(File::delete);
+    }
+
+    public static void openZip(String pathToZip, String pathToFolder) {
+        File zipZile = new File(pathToZip);
+        try (FileInputStream fis = new FileInputStream(zipZile);
+             ZipInputStream zis = new ZipInputStream(fis)) {
+            ZipEntry entry;
+            String fileName;
+            while ((entry = zis.getNextEntry()) != null) {
+                fileName = pathToFolder + File.separator + entry.getName();
+                try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fileName))) {
+                    for (int c = zis.read(); c != -1; c = zis.read()) {
+                        bos.write(c);
+                    }
+                    bos.flush();
+                    zis.closeEntry();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static GameProgress openProgress(String pathToFile) {
+        File file = new File(pathToFile);
+        GameProgress gameProgress = null;
+        try (FileInputStream fis = new FileInputStream(file);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            gameProgress = (GameProgress) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return gameProgress;
     }
 }

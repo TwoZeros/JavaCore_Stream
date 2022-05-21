@@ -15,6 +15,7 @@ public class Logger {
 
     private final static String LOG_FORMAT3 = "%s | %s | %s | %s\n";
     private final static String LOG_FORMAT2 = "%s | %s | %s\n";
+    private final static String LOG_FORMAT1 = "%s | %s \n";
     private File file;
 
     public Logger(File file) {
@@ -29,14 +30,16 @@ public class Logger {
     }
 
     public void writeToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file,true))) {
             writer.write(logger.toString());
             writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
+    public void addToLog(String param1) {
+        LOG_FORMATTER.format(LOG_FORMAT1, getCurrentDateTime(), param1);
+    }
     public void addToLog(String param1, String param2, String param3) {
         LOG_FORMATTER.format(LOG_FORMAT3, getCurrentDateTime(), param1, param2, param3);
     }
