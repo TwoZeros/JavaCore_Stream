@@ -1,4 +1,3 @@
-package ru.twozeros.netology.mygame;
 
 import java.io.*;
 import java.util.Arrays;
@@ -6,8 +5,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-public class Game {
-    public static void saveGame(String pathToSave, GameProgress gameProgress) {
+public class GameServiceImpl implements GameService{
+    @Override
+    public void saveGame(String pathToSave, GameProgress gameProgress) {
         File file = new File(pathToSave);
         try (ObjectOutputStream oot = new ObjectOutputStream(new FileOutputStream(file))) {
             oot.writeObject(gameProgress);
@@ -16,7 +16,7 @@ public class Game {
         }
     }
 
-    public static void zipFiles(String pathToZip, String... pathToFiles) {
+    public void zipFiles(String pathToZip, String... pathToFiles) {
         try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(pathToZip))) {
             for (String pathToFile : pathToFiles) {
                 File file = new File(pathToFile);
@@ -34,14 +34,14 @@ public class Game {
         }
         deleteFiles(pathToFiles);
     }
-
-    public static void deleteFiles(String... pathToFile) {
+    @Override
+    public void deleteFiles(String... pathToFile) {
         Arrays.stream(pathToFile)
                 .map(File::new)
                 .forEach(File::delete);
     }
-
-    public static void openZip(String pathToZip, String pathToFolder) {
+    @Override
+    public void openZip(String pathToZip, String pathToFolder) {
         File zipZile = new File(pathToZip);
         try (FileInputStream fis = new FileInputStream(zipZile);
              ZipInputStream zis = new ZipInputStream(fis)) {
@@ -61,8 +61,8 @@ public class Game {
             e.printStackTrace();
         }
     }
-
-    public static GameProgress openProgress(String pathToFile) {
+    @Override
+    public GameProgress openProgress(String pathToFile) {
         File file = new File(pathToFile);
         GameProgress gameProgress = null;
         try (FileInputStream fis = new FileInputStream(file);

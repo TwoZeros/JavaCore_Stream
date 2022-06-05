@@ -1,10 +1,9 @@
-package ru.twozeros.netology.mygame;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class Installer {
+public class Installer implements InstallService{
 
     private final Logger logger;
     private final String STR_SUCCESS = "Успешно cоздан";
@@ -23,7 +22,7 @@ public class Installer {
         this.logger = new Logger();
         pathToInstall = "Game";
     }
-
+    @Override
     public void install() {
         createFolder("scr",
                 "scr" + File.separator + "main",
@@ -42,6 +41,12 @@ public class Installer {
         logger.writeToFile();
     }
 
+    @Override
+    public String getPathToInstall() {
+        return pathToInstall;
+    }
+
+    @Override
     public void createFile(String... fileNames) {
         Arrays.stream(fileNames)
                 .map(file -> new File(pathToInstall, file))
@@ -55,7 +60,7 @@ public class Installer {
                     }
                 });
     }
-
+    @Override
     public void createFolder(String... folderNames) {
         Arrays.stream(folderNames)
                 .map(file -> new File(pathToInstall, file))
